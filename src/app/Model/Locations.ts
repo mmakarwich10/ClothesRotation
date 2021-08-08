@@ -34,12 +34,28 @@ export class LocationHelper {
         switch(type) {
             case LocationHelperEnum.All:
                 break;
+            case LocationHelperEnum.Towel:
+                returnList = this.removeNonTowelLocations(returnList);
+                break;
+            case LocationHelperEnum.DishTowel:
+                returnList = this.removeNonTowelLocations(returnList);
+                returnList.splice(returnList.findIndex(x => x === LocationEnum.OnRack), 1);
+                break;
             default:
                 returnList = [];
                 break;
         }
 
         return returnList;
+    }
+
+    private static removeNonTowelLocations(list : LocationEnum[]) {
+        list.splice(list.findIndex(x => x === LocationEnum.AltUnderwearStack), 1);
+        list.splice(list.findIndex(x => x === LocationEnum.HanesMainStack), 1);
+        list.splice(list.findIndex(x => x === LocationEnum.HangingPantsQueue), 1);
+        list.splice(list.findIndex(x => x === LocationEnum.StoolStack), 1);
+        list.splice(list.findIndex(x => x === LocationEnum.Wearing), 1);
+        return list;
     }
 }
 
@@ -54,7 +70,6 @@ export abstract class ClothesStack implements IndexedLocation {
 
     push(newItem: ClothesItem): void {
         this.items.push(newItem);
-        newItem.moveTo(this);
     }
 
     pop(): void {
@@ -80,7 +95,6 @@ abstract class ClothesQueue implements IndexedLocation {
 
     push(newItem: ClothesItem): void {
         this.items.push(newItem);
-        newItem.moveTo(this);
     }
 
     pop(): void {
@@ -112,6 +126,10 @@ export abstract class TowelStack extends ClothesStack implements TowelLocation {
 export class DishTowelStack extends TowelStack {
     constructor(location: LocationEnum) {
         super(location);
+        let acceptedLocations: LocationEnum[] = LocationHelper.getAcceptedLocations(LocationHelperEnum.DishTowel);
+
+        if (!(acceptedLocations.includes(location)))
+            this.loc = LocationEnum.Standby;
     }
 
     push(newItem: DishTowel): void {
@@ -133,8 +151,18 @@ class UnderwearStack extends ClothesStack implements UnderwearLocation {
     }
 }
 
+
+
+
+
+
+
+
 export enum LocationHelperEnum {
-    All
+    All,
+    Towel,
+    Underwear,
+    DishTowel
 }
 
 export enum LocationEnum {

@@ -1,5 +1,6 @@
 import { TestBed } from "@angular/core/testing";
-import { ClothesStack, DishTowelStack, IndexedLocation, LocationEnum, TowelStack } from "./Locations";
+import { ClothesItem, DishTowel, Towel } from "./Clothes";
+import { ClothesStack, DishTowelStack, IndexedLocation, LocationEnum, LocationHelper, LocationHelperEnum, TowelStack } from "./Locations";
 
 describe('ClothesStack ->', () => {
     describe('DishTowelStack ->', () => {
@@ -28,8 +29,9 @@ describe('ClothesStack ->', () => {
                 });
             });
 
-            it('should create an instance with the location defaulted to WhiteGreenDishTowelStack', () => {
-                
+            it('should create an instance with the location defaulted to Standby', () => {
+                testInstance = new DishTowelStack(LocationEnum.AltUnderwearStack);
+                expect(testInstance.loc).toEqual(LocationEnum.Standby);
             });
         });
         
@@ -50,5 +52,54 @@ describe('ClothesStack ->', () => {
                 expect("loc" in testInstance).toBeTrue();
             });
         });
+
+        describe('push() ->', () => {
+            let testItem : DishTowel;
+            
+            describe('Preliminary checks ->', () => {
+                beforeEach(() => {
+                    testItem = new DishTowel(0, 'test', new Date("8/8/21"));
+    
+                    testInstance.push(testItem);
+                });
+                
+                it('should add the new item to the stack', () => {
+                    expect(testInstance.items.length).toEqual(1);
+                    expect(testInstance.items[0]).toEqual(testItem);
+                });
+    
+                it('should add the new item that is an instance of Towel to the stack', () => {
+                    expect(testInstance.items[0]).toBeInstanceOf(Towel);
+                });
+    
+                it('should add the new item that is an instance of DishTowel to the stack', () => {
+                    expect(testInstance.items[0]).toBeInstanceOf(DishTowel);
+                });
+
+                it('should add the new item to the end of the stack', () => {
+                    testInstance.push(new DishTowel(1, 'test2', new Date("8/8/21")));
+                });
+            }); 
+            
+            it('should not add the new item to the stack', () => {
+                //testItem = new 
+            });
+
+            
+        });
+    });
+});
+
+describe('LocationHelper ->', () => {
+    it('should not return an empty list for type Towel', () => {
+        var testList = LocationHelper.getAcceptedLocations(LocationHelperEnum.Towel);
+
+        expect(testList.length).toBeGreaterThan(0);
+    });
+
+    it('should not return an empty list for type DishTowel', () => {
+        var testList = LocationHelper.getAcceptedLocations(LocationHelperEnum.DishTowel);
+
+        expect(testList.length).toBeGreaterThan(0);
     });
 });
