@@ -9,7 +9,8 @@ export interface IndexedLocation extends ClothesLocation {
     readonly items: Array<ClothesItem>;
     push(newItem: ClothesItem): void;
     pop(): void;
-    remove(item: ClothesItem, index?: number): void;
+    remove(item: ClothesItem): void;
+    removeAt(index: number): void;
 }
 
 export interface TowelLocation extends ClothesLocation {}
@@ -60,11 +61,16 @@ export class LocationHelper {
 }
 
 export abstract class ClothesStack implements IndexedLocation {
-    loc: LocationEnum;
-    items: Array<ClothesItem>;
+    readonly loc: LocationEnum;
+    readonly items: Array<ClothesItem>;
 
     constructor(location: LocationEnum) {
-        this.loc = location;
+        if (!(acceptedLocations.includes(location))) {
+            this.loc = LocationEnum.Standby;
+        } else {
+            this.loc = location;
+        }   
+        
         this.items = [];
     }
 
@@ -76,8 +82,13 @@ export abstract class ClothesStack implements IndexedLocation {
         this.items.pop();
     }
 
-    remove(item?: ClothesItem, index?: number): void {
-        const _index: number = item ? this.items.findIndex(x => x === item) : index ?? -1;
+    remove(item: ClothesItem): void {
+        const _index: number = item ? this.items.findIndex(x => x === item) : -1;
+        this.removeAt(_index);
+    }
+
+    removeAt(index: number): void {
+        const _index: number = index ?? -1;
         if (_index > -1) {
             this.items.splice(_index, 1);
         }
@@ -101,8 +112,13 @@ abstract class ClothesQueue implements IndexedLocation {
         this.items.splice(0, 1);
     }
 
-    remove(item?: ClothesItem, index?: number): void {
-        const _index: number = item ? this.items.findIndex(x => x === item) : index ?? -1;
+    remove(item: ClothesItem): void {
+        const _index: number = item ? this.items.findIndex(x => x === item) : -1;
+        this.removeAt(_index);
+    }
+
+    removeAt(index: number): void {
+        const _index: number = index ?? -1;
         if (_index > -1) {
             this.items.splice(_index, 1);
         }
@@ -118,8 +134,8 @@ export abstract class TowelStack extends ClothesStack implements TowelLocation {
         super.push(newItem);
     } 
 
-    remove(item?: Towel, index?: number): void {
-        super.remove(item, index);
+    remove(item: Towel): void {
+        super.remove(item);
     }
 }
 
@@ -128,16 +144,15 @@ export class DishTowelStack extends TowelStack {
         super(location);
         let acceptedLocations: LocationEnum[] = LocationHelper.getAcceptedLocations(LocationHelperEnum.DishTowel);
 
-        if (!(acceptedLocations.includes(location)))
-            this.loc = LocationEnum.Standby;
+        
     }
 
     push(newItem: DishTowel): void {
         super.push(newItem);
     }
 
-    remove(item?: DishTowel, index?: number): void {
-        super.remove(item, index);
+    remove(item: DishTowel): void {
+        super.remove(item);
     }
 }
 

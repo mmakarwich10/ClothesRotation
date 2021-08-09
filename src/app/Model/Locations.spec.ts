@@ -53,39 +53,92 @@ describe('ClothesStack ->', () => {
             });
         });
 
-        describe('push() ->', () => {
+        describe('methods ->', () => {
             let testItem : DishTowel;
-            
-            describe('Preliminary checks ->', () => {
-                beforeEach(() => {
-                    testItem = new DishTowel(0, 'test', new Date("8/8/21"));
-    
-                    testInstance.push(testItem);
-                });
-                
-                it('should add the new item to the stack', () => {
-                    expect(testInstance.items.length).toEqual(1);
-                    expect(testInstance.items[0]).toEqual(testItem);
-                });
-    
-                it('should add the new item that is an instance of Towel to the stack', () => {
-                    expect(testInstance.items[0]).toBeInstanceOf(Towel);
-                });
-    
-                it('should add the new item that is an instance of DishTowel to the stack', () => {
-                    expect(testInstance.items[0]).toBeInstanceOf(DishTowel);
-                });
 
-                it('should add the new item to the end of the stack', () => {
-                    testInstance.push(new DishTowel(1, 'test2', new Date("8/8/21")));
+            describe('push() ->', () => {
+                
+                
+                describe('Preliminary checks ->', () => {
+                    beforeEach(() => {
+                        testItem = new DishTowel(0, 'test', new Date("8/8/21"));
+        
+                        testInstance.push(testItem);
+                    });
+                    
+                    it('should add the new item to the stack', () => {
+                        expect(testInstance.items.length).toEqual(1);
+                        expect(testInstance.items[0]).toEqual(testItem);
+                    });
+        
+                    it('should add the new item that is an instance of Towel to the stack', () => {
+                        expect(testInstance.items[0]).toBeInstanceOf(Towel);
+                    });
+        
+                    it('should add the new item that is an instance of DishTowel to the stack', () => {
+                        expect(testInstance.items[0]).toBeInstanceOf(DishTowel);
+                    });
+
+                    it('should add the new item to the end of the stack', () => {
+                        let testItem2 = new DishTowel(1, 'test2', new Date("8/8/21"));
+
+                        testInstance.push(testItem2);
+
+                        expect(testInstance.items[1]).toEqual(testItem2);
+                    });
+                }); 
+                
+                it('should not add the new item to the stack', () => {
+                    //testItem = new 
                 });
-            }); 
-            
-            it('should not add the new item to the stack', () => {
-                //testItem = new 
             });
 
-            
+            describe('pop() ->', () => {
+                beforeEach(() => {
+                    testInstance.push(testItem);
+                });
+
+                it('should remove item from the stack', () => {
+                    testInstance.pop();
+
+                    expect(testInstance.items.length).toEqual(0);
+                });
+
+                it('should remove item from the end of the stack', () => {
+                    let testItem2 = new DishTowel(1, 'test2', new Date("8/8/21"));
+
+                    testInstance.push(testItem2);
+
+                    testInstance.pop();
+
+                    expect(testInstance.items[0]).not.toEqual(testItem2);
+                })
+            });
+
+            describe('remove()/removeAt() ->', () => {
+                beforeEach(() => {
+                    testItem = new DishTowel(3, 'test3', new Date("8/9/21"));
+                    testInstance.push(new DishTowel(0, 'test', new Date("8/8/21")));
+                    testInstance.push(testItem);
+                    testInstance.push(new DishTowel(1, 'test2', new Date("8/8/21")));
+                })
+
+                it('should remove the second item from the list', () => {
+                    testInstance.removeAt(1);
+
+                    expect(testInstance.items[1]).not.toEqual(testItem);
+                });
+
+                it('should remove item from the list', () => {
+                    testInstance.remove(testItem);
+
+                    expect(testInstance.items.length).not.toContain(testItem);
+                });
+            });            
+        });
+
+        it('should throw an error when trying to set loc', () => {
+            expect(() => {testInstance.loc = LocationEnum.Standby;}).toThrowError();
         });
     });
 });
