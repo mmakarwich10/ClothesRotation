@@ -136,10 +136,6 @@ describe('ClothesStack ->', () => {
                 });
             });            
         });
-
-        it('should throw an error when trying to set loc', () => {
-            expect(() => {testInstance.loc = LocationEnum.Standby;}).toThrowError();
-        });
     });
 });
 

@@ -64,7 +64,8 @@ export abstract class ClothesStack implements IndexedLocation {
     readonly loc: LocationEnum;
     readonly items: Array<ClothesItem>;
 
-    constructor(location: LocationEnum) {
+    constructor(location: LocationEnum, locDetails: LocationHelperEnum) {
+        let acceptedLocations: LocationEnum[] = LocationHelper.getAcceptedLocations(locDetails);
         if (!(acceptedLocations.includes(location))) {
             this.loc = LocationEnum.Standby;
         } else {
@@ -126,8 +127,8 @@ abstract class ClothesQueue implements IndexedLocation {
 }
   
 export abstract class TowelStack extends ClothesStack implements TowelLocation {
-    constructor(location: LocationEnum) {
-        super(location);
+    constructor(location: LocationEnum, locDetails: LocationHelperEnum) {
+        super(location, locDetails);
     }
 
     push(newItem: Towel): void {
@@ -141,10 +142,7 @@ export abstract class TowelStack extends ClothesStack implements TowelLocation {
 
 export class DishTowelStack extends TowelStack {
     constructor(location: LocationEnum) {
-        super(location);
-        let acceptedLocations: LocationEnum[] = LocationHelper.getAcceptedLocations(LocationHelperEnum.DishTowel);
-
-        
+        super(location, LocationHelperEnum.DishTowel);        
     }
 
     push(newItem: DishTowel): void {
@@ -158,7 +156,7 @@ export class DishTowelStack extends TowelStack {
 
 class UnderwearStack extends ClothesStack implements UnderwearLocation {
     constructor(location: LocationEnum) {
-        super(location);
+        super(location, LocationHelperEnum.All);
     }
 
     push(newItem: Underwear): void {
